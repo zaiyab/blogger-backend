@@ -1,5 +1,6 @@
 import Comment from "../models/Comment";
 import Post from "../models/Post";
+import User from "../models/User";
 
 const createComment = async (req, res, next) => {
   try {
@@ -11,9 +12,14 @@ const createComment = async (req, res, next) => {
       const error = new Error("Post was not found");
       return next(error);
     }
-
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      const error = new Error("User was not found");
+      return next(error);
+    }
     const newComment = new Comment({
       user: req.user._id,
+      username: user.name,
       desc,
       post: post._id,
       parent,
@@ -65,4 +71,18 @@ const deleteComment = async (req, res, next) => {
   }
 };
 
-export { createComment, updateComment, deleteComment };
+const getComments = async (req, res, next) => {
+  try {
+    const comment = await Comment.find({ post: req.body.pid });
+
+    if (!comment) {
+      const error = new Error("No comments");
+      return next(error);
+    }
+
+    return res.json(comment);
+  } catch (error) {
+    next(error);
+  }
+};
+export { createComment, updateComment, deleteComment, getComments };

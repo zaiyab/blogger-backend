@@ -6,9 +6,11 @@ import { v4 as uuidv4 } from "uuid";
 
 const createPost = async (req, res, next) => {
   try {
+
     const post = new Post({
+
       title: req.body.title,
-      caption: req.body.desc,
+      caption: req.body.caption,
       slug: uuidv4(),
       body: {
         type: "doc",
@@ -19,6 +21,7 @@ const createPost = async (req, res, next) => {
     });
 
     const createdPost = await post.save();
+
     return res.json(createdPost);
   } catch (error) {
     next(error);

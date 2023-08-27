@@ -8,7 +8,7 @@ const createPost = async (req, res, next) => {
   try {
     const post = new Post({
       title: req.body.title,
-      caption: req.body.desc,
+      caption: req.body.caption,
       slug: uuidv4(),
       body: {
         type: "doc",

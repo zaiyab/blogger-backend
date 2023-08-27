@@ -85,4 +85,46 @@ const getComments = async (req, res, next) => {
     next(error);
   }
 };
-export { createComment, updateComment, deleteComment, getComments };
+
+const approveComments = async (req, res, next) => {
+  try {
+    const updatedComment = await Comment.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: { check: req.body.status } }, // Modify fields as needed
+      { new: true } // Return the updated document
+    );
+
+    if (!updateComment) {
+      const error = new Error("No comments");
+      return next(error);
+    }
+
+    return res.json(updatedComment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const delComments = async (req, res, next) => {
+  try {
+    const deletedComment = await Comment.findOneAndDelete({ _id: req.body.id });
+
+    if (!deletedComment) {
+      const error = new Error("No comments");
+      return next(error);
+    }
+
+    return res.json(deleteComment._id);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  createComment,
+  updateComment,
+  deleteComment,
+  getComments,
+  approveComments,
+  delComments,
+};

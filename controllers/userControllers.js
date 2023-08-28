@@ -171,10 +171,92 @@ const updateProfilePicture = async (req, res, next) => {
   }
 };
 
+
+// const getUsers = async (req, res, next) => {
+//   try {
+//     let users = await User.find().limit(req.body.limit);
+
+//     if (users) {
+//       return res.status(201).json(users);
+//     } else {
+//       let error = new Error("Users not found");
+//       error.statusCode = 404;
+//       next(error);
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+const getUsers = async (req, res, next) => {
+  try {
+    const page = parseInt(req.body.page) || 1; // Get the page number from the query parameter
+    const pageSize = parseInt(req.body.limit) || 10; // Set the number of users per page
+    const skip = (page - 1) * pageSize;
+
+    let users = await User.find().limit(pageSize).skip(skip);
+
+    if (users) {
+      const total = await User.countDocuments();
+      const pages = Math.ceil(total / pageSize);
+
+      res.header({
+        "x-totalcount": JSON.stringify(total),
+        "x-currentpage": JSON.stringify(page),
+        "x-pagesize": JSON.stringify(pageSize),
+        "x-totalpagecount": JSON.stringify(pages),
+      });
+    
+      return res.status(200).json(users);
+    } else {
+      let error = new Error("Users not found");
+      error.statusCode = 404;
+      next(error);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const approveUsers = async (req, res, next) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: { verified: req.body.state } }, // Modify fields as needed
+      { new: true } // Return the updated document
+    );
+
+    if (!user) {
+      const error = new Error("No user");
+      return next(error);
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findOneAndDelete({ _id: req.body.id })
+
+    if (!user) {
+      const error = new Error("No user");
+      return next(error);
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   registerUser,
   loginUser,
   userProfile,
   updateProfile,
   updateProfilePicture,
+  getUsers,
+  approveUsers,
+  deleteUser
 };

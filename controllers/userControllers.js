@@ -171,7 +171,6 @@ const updateProfilePicture = async (req, res, next) => {
   }
 };
 
-
 // const getUsers = async (req, res, next) => {
 //   try {
 //     let users = await User.find().limit(req.body.limit);
@@ -189,14 +188,24 @@ const updateProfilePicture = async (req, res, next) => {
 // };
 const getUsers = async (req, res, next) => {
   try {
-    const page = parseInt(req.body.page) || 1; // Get the page number from the query parameter
-    const pageSize = parseInt(req.body.limit) || 10; // Set the number of users per page
+    const page = parseInt(req.body.page) || 1;
+    const pageSize = parseInt(req.body.limit) || 10;
     const skip = (page - 1) * pageSize;
 
-    let users = await User.find().limit(pageSize).skip(skip);
+    const searchKeyword = req.body.searchKeyword || ""; // Get the search keyword from the request body
+
+    const query = {
+      // Modify this condition to match the fields you want to search in
+      $or: [
+        { name: { $regex: searchKeyword, $options: "i" } },
+        { email: { $regex: searchKeyword, $options: "i" } },
+      ],
+    };
+
+    let users = await User.find(query).limit(pageSize).skip(skip);
 
     if (users) {
-      const total = await User.countDocuments();
+      const total = await User.countDocuments(query); // Count documents based on query
       const pages = Math.ceil(total / pageSize);
 
       res.header({
@@ -205,7 +214,7 @@ const getUsers = async (req, res, next) => {
         "x-pagesize": JSON.stringify(pageSize),
         "x-totalpagecount": JSON.stringify(pages),
       });
-    
+
       return res.status(200).json(users);
     } else {
       let error = new Error("Users not found");
@@ -237,7 +246,7 @@ const approveUsers = async (req, res, next) => {
 };
 const deleteUser = async (req, res, next) => {
   try {
-    const user = await User.findOneAndDelete({ _id: req.body.id })
+    const user = await User.findOneAndDelete({ _id: req.body.id });
 
     if (!user) {
       const error = new Error("No user");
@@ -258,5 +267,5 @@ export {
   updateProfilePicture,
   getUsers,
   approveUsers,
-  deleteUser
+  deleteUser,
 };

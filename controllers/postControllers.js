@@ -6,9 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const createPost = async (req, res, next) => {
   try {
-
     const post = new Post({
-
       title: req.body.title,
       caption: req.body.caption,
       slug: uuidv4(),
@@ -155,7 +153,7 @@ const getAllPosts = async (req, res, next) => {
     }
     let query = Post.find(where);
     const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.limit) || 10;
+    const pageSize = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * pageSize;
     const total = await Post.find(where).countDocuments();
     const pages = Math.ceil(total / pageSize);

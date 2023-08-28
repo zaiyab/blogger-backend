@@ -20,6 +20,7 @@ const createComment = async (req, res, next) => {
     const newComment = new Comment({
       user: req.user._id,
       username: user.name,
+      useremail: user.email,
       desc,
       post: post._id,
       parent,

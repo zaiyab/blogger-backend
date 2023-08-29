@@ -8,6 +8,8 @@ const PostSchema = new Schema(
     body: { type: Object, required: true },
     photo: { type: String, required: false },
     user: { type: Schema.Types.ObjectId, ref: "User" },
+    active: { type: Boolean, default: false },
+    links: { type: [Object], default: null },
     tags: { type: [String] },
     categories: [{ type: Schema.Types.ObjectId, ref: "PostCategories" }],
   },

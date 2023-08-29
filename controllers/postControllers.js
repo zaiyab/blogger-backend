@@ -14,6 +14,7 @@ const createPost = async (req, res, next) => {
         type: "doc",
         content: [],
       },
+      links: [],
       photo: "",
       user: req.user._id,
     });
@@ -25,7 +26,24 @@ const createPost = async (req, res, next) => {
     next(error);
   }
 };
+const approvePost = async (req, res, next) => {
+  try {
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: { active: req.body.active } }, // Modify fields as needed
+      { new: true } // Return the updated document
+    );
+    console.log(updatedPost);
+    if (!updatePost) {
+      const error = new Error("No Post");
+      return next(error);
+    }
 
+    return res.json(updatedPost);
+  } catch (error) {
+    next(error);
+  }
+};
 const updatePost = async (req, res, next) => {
   try {
     const post = await Post.findOne({ slug: req.params.slug });
@@ -39,13 +57,15 @@ const updatePost = async (req, res, next) => {
     const upload = uploadPicture.single("postPicture");
 
     const handleUpdatePostData = async (data) => {
-      const { title, caption, slug, body, tags, categories } = JSON.parse(data);
+      const { title, caption, slug, body, tags, categories, links } =
+        JSON.parse(data);
       post.title = title || post.title;
       post.caption = caption || post.caption;
       post.slug = slug || post.slug;
       post.body = body || post.body;
       post.tags = tags || post.tags;
       post.categories = categories || post.categories;
+      post.links = links || post.links;
       const updatedPost = await post.save();
       return res.json(updatedPost);
     };
@@ -187,4 +207,11 @@ const getAllPosts = async (req, res, next) => {
   }
 };
 
-export { createPost, updatePost, deletePost, getPost, getAllPosts };
+export {
+  createPost,
+  updatePost,
+  deletePost,
+  getPost,
+  getAllPosts,
+  approvePost,
+};

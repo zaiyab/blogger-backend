@@ -33,7 +33,6 @@ const approvePost = async (req, res, next) => {
       { $set: { active: req.body.active } }, // Modify fields as needed
       { new: true } // Return the updated document
     );
-    console.log(updatedPost);
     if (!updatePost) {
       const error = new Error("No Post");
       return next(error);
@@ -58,7 +57,6 @@ const updatePost = async (req, res, next) => {
     const handleUpdatePostData = async (data) => {
       const { title, caption, slug, body, tags, categories, links } =
         JSON.parse(data);
-      console.log(JSON.parse(req.body.links));
       post.title = title || post.title;
       post.caption = caption || post.caption;
       post.slug = slug || post.slug;

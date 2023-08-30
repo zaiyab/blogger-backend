@@ -12,6 +12,7 @@ import {
 import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import category from "./routes/category";
 
 dotenv.config();
 connectDB();
@@ -25,6 +26,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/cat", category);
+
 app.use("/api/comments", commentRoutes);
 
 // static assets

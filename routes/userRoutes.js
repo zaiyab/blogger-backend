@@ -8,9 +8,9 @@ import {
   updateProfilePicture,
   getUsers,
   deleteUser,
-  approveUsers
+  approveUsers,
 } from "../controllers/userControllers";
-import { authGuard } from "../middleware/authMiddleware";
+import { authGuard, adminGuard } from "../middleware/authMiddleware";
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
@@ -18,9 +18,7 @@ router.get("/profile", authGuard, userProfile);
 router.put("/updateProfile", authGuard, updateProfile);
 router.put("/updateProfilePicture", authGuard, updateProfilePicture);
 router.post("/getusers", authGuard, getUsers);
-router.post("/approveusers", authGuard, approveUsers);
-router.post("/deleteusers", authGuard, deleteUser);
-
-
+router.post("/approveusers", authGuard, adminGuard, approveUsers);
+router.post("/deleteusers", authGuard, adminGuard, deleteUser);
 
 export default router;

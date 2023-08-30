@@ -17,6 +17,7 @@ const createPost = async (req, res, next) => {
       links: req.body.links,
       photo: "",
       user: req.user._id,
+      categories: ["64ef2979579068ab535377f5"],
     });
 
     const createdPost = await post.save();
@@ -117,12 +118,59 @@ const deletePost = async (req, res, next) => {
   }
 };
 
+// const getPost = async (req, res, next) => {
+//   try {
+//     const post = await Post.findOne({ slug: req.params.slug }).populate([
+//       {
+//         path: "user",
+//         select: ["avatar", "name"],
+//       },
+//       {
+//         path: "comments",
+//         match: {
+//           check: true,
+//           parent: null,
+//         },
+//         populate: [
+//           {
+//             path: "user",
+//             select: ["avatar", "name"],
+//           },
+//           {
+//             path: "replies",
+//             match: {
+//               check: true,
+//             },
+//             populate: [
+//               {
+//                 path: "user",
+//                 select: ["avatar", "name"],
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//     ]);
+
+//     if (!post) {
+//       const error = new Error("Post was not found");
+//       return next(error);
+//     }
+
+//     return res.json(post);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 const getPost = async (req, res, next) => {
   try {
     const post = await Post.findOne({ slug: req.params.slug }).populate([
       {
         path: "user",
         select: ["avatar", "name"],
+      },
+      {
+        path: "categories", // Populate categories field
       },
       {
         path: "comments",
@@ -195,6 +243,9 @@ const getAllPosts = async (req, res, next) => {
         {
           path: "user",
           select: ["avatar", "name", "verified"],
+        },
+        {
+          path: "categories", // Populate categories field
         },
       ])
       .sort({ updatedAt: "desc" });

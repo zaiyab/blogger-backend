@@ -11,7 +11,7 @@ import {
 import { authGuard, adminGuard } from "../middleware/authMiddleware";
 
 router.route("/").post(authGuard, adminGuard, createPost).get(getAllPosts);
-router.post("/approvePost", authGuard, approvePost);
+router.post("/approvePost", authGuard, adminGuard, approvePost);
 
 router
   .route("/:slug")

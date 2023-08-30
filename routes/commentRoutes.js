@@ -9,7 +9,7 @@ import {
   approveComments,
   delComments,
 } from "../controllers/commentControllers";
-import { authGuard } from "../middleware/authMiddleware";
+import { authGuard, adminGuard } from "../middleware/authMiddleware";
 
 router.post("/", authGuard, createComment);
 router
@@ -18,7 +18,7 @@ router
   .delete(authGuard, deleteComment);
 
 router.post("/getcomments", authGuard, getComments);
-router.post("/approvecomments", authGuard, approveComments);
-router.post("/delcomments", authGuard, delComments);
+router.post("/approvecomments", authGuard, adminGuard, approveComments);
+router.post("/delcomments", authGuard, adminGuard, delComments);
 
 export default router;

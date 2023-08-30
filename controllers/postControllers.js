@@ -17,9 +17,9 @@ const createPost = async (req, res, next) => {
       links: req.body.links,
       photo: "",
       user: req.user._id,
-      categories: ["64ef2979579068ab535377f5"],
+      categories: req.body.category,
     });
-
+    console.log(req.body.category);
     const createdPost = await post.save();
 
     return res.json(createdPost);

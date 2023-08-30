@@ -41,4 +41,13 @@ router.post(
   }
 );
 
+router.post("/allcategories", authGuard, async (req, res, next) => {
+  try {
+    const categories = await PostCategories.find().lean();
+    res.status(200).json({ categories });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default router;

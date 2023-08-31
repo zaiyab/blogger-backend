@@ -269,7 +269,9 @@ const getAllPosts = async (req, res, next) => {
 
       where.categories = categoryId; // Filter by category
     }
-
+    if (req.query.tag) {
+      where.tags = req.query.tag; // Filter by tag
+    }
     let query = Post.find(where);
 
     const page = parseInt(req.query.page) || 1;

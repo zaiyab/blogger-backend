@@ -37,7 +37,7 @@ router.post("/create", authGuard, adminGuard, async (req, res, next) => {
 router.post("/allcategories", authGuard, async (req, res, next) => {
   try {
     const page = parseInt(req.body.page) || 1;
-    const pageSize = parseInt(req.body.limit) || 10;
+    const pageSize = parseInt(req.body.limit);
     const skip = (page - 1) * pageSize;
 
     const searchKeyword = req.body.searchKeyword || ""; // Get the search keyword from the request body
